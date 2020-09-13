@@ -22,5 +22,5 @@ api.add_resource(Uploader, '/api/upload', endpoint='uploader', \
     resource_class_kwargs={'filedir': filedir})
 
 from fs.resources import File
-api.add_resource(File, '/api/file/<string:file_name>', endpoint='file', \
+api.add_resource(File, '/api/file/<file_name>', endpoint='file', \
     resource_class_kwargs={'filedir': filedir})
