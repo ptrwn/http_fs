@@ -40,8 +40,6 @@ class Uploader(Resource):
             'message': f"{file_name} saved successfully."
             }
 
-        print(out)
-
         return jsonify(out)
 
 
@@ -94,22 +92,28 @@ class File(Resource):
 
 
     def delete(self, file_name):
-        # curl -X "DELETE" http://www.example.com/page
-        # curl -X "DELETE" http://www.url.com/page
+        # curl -X DELETE 127.0.0.1:4000/api/file/test.txt
 
         search_result = self.search(file_name)
 
         if search_result.get('error', None):
             return jsonify(search_result)
         else:
-            Path.unlink(search_result['subdir'] / search_result['name'])
-            is_empty = not any(Path(search_result['subdir']).iterdir())
+            file_subdir = search_result['subdir']
+            file_name = search_result['name']
+            Path.unlink(file_subdir / file_name)
+            out = {
+            'status': 'OK',
+            'filename': file_name,
+            'message': f"File {file_name} deleted successfully."
+            }
+            is_empty = not any(Path(file_subdir).iterdir())
             if is_empty:
-                Path.rmdir(search_result['subdir'])
-            
-            return 'deleted!'
-        
-
+                Path.rmdir(file_subdir)
+                out['path'] = str(file_subdir)
+                out['message_dir'] = f"Folder {file_subdir} deleted successfully."
+               
+            return jsonify(out)
 
 
         
