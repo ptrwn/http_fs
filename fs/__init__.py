@@ -21,8 +21,6 @@ from fs.resources import Uploader
 api.add_resource(Uploader, '/api/upload', endpoint='uploader', \
     resource_class_kwargs={'filedir': filedir})
 
-from fs.resources import Downloader
-api.add_resource(Downloader, '/api/download', endpoint='downloader')
-
-from fs.resources import Deleter
-api.add_resource(Deleter, '/api/delete', endpoint='deleter')
+from fs.resources import File
+api.add_resource(File, '/api/file/<string:file_name>', endpoint='file', \
+    resource_class_kwargs={'filedir': filedir})

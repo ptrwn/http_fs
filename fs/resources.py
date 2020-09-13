@@ -23,8 +23,26 @@ class Uploader(Resource):
         return file_hash.hexdigest()
 
 
-    def saver(self, file_obj):
-        pass
+    def saver(self, file_obj, file_name):
+
+        subdir_name = file_name[0:2]
+        subdir_path = Path(self.filedir) / subdir_name
+
+        if not (subdir_path.exists() and subdir_path.is_dir()):
+            Path(subdir_path).mkdir()
+        
+        file_obj.save(Path(subdir_path) / file_name)
+
+        out = {
+            'status': 'OK',
+            'path': str(Path(subdir_path)),
+            'filename': file_name,
+            'message': f"{file_name} saved successfully."
+            }
+
+        print(out)
+
+        return jsonify(out)
 
 
 
@@ -33,30 +51,12 @@ class Uploader(Resource):
         
         if request.files['file']:
             # TODO - write the original file name into log
-
-            directory = self.filedir
-
-            submitted_file = request.files['file']
             # submitted_file_name = submitted_file.filename
 
-            submitted_file_name = self.hasher(submitted_file)
-            # submitted_file_name = '71submitted_1cf311a8ce4d57289d6faa93d0c43809a8b5b14f9b9d66f013af'
-
-            subdir_name = submitted_file_name[0:2]
-            subdir_path = Path(self.filedir) / subdir_name
-            if not (subdir_path.exists() and subdir_path.is_dir()):
-                Path(subdir_path).mkdir()
-            
-            submitted_file.save(Path(subdir_path) / submitted_file_name)
-            out = {
-                'status': 'OK',
-                'path': str(Path(subdir_path)),
-                'filename': submitted_file_name,
-                'message': f"{submitted_file_name} saved successful."
-                }
-
-            return jsonify(out)
-
+            directory = self.filedir
+            submitted_file = request.files['file']
+            submitted_file_name = self.hasher(submitted_file)            
+            self.saver(submitted_file, submitted_file_name)
 
     
     def put(self):
@@ -64,12 +64,29 @@ class Uploader(Resource):
         print('got put')
 
 
-class Downloader(Resource):
-    pass
+class File(Resource):
 
+    def __init__(self, filedir):
+        self.filedir = filedir
 
-class Deleter(Resource):
-    pass
+    def search(self):
+        pass
+
+    def get(self, file_name):
+        print('GOT THIS', file_name)
+
+        subdir_name = file_name[0:2]
+        subdir_path = Path(self.filedir) / subdir_name
+
+        if not subdir_path.exists():
+            return jsonify({'error':'file does not exist'})
+
+    def delete(self):
+        pass
+    
+
+        
+
 
 
 
