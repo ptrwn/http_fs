@@ -70,27 +70,46 @@ class File(Resource):
     def __init__(self, filedir):
         self.filedir = filedir
 
-    def search(self):
-        pass
-
-    def get(self, file_name):
-        # curl 127.0.0.1:4000/api/file/somefile.txt --output some.file
+    def search(self, file_name):
         subdir_name = file_name[0:2]
         file_path = Path(self.filedir) / subdir_name / file_name
         file_subdir = Path(self.filedir) / subdir_name
 
         if not file_path.exists():
-            return jsonify({'error':'file does not exist'})
+            return {'error':'file does not exist'}
         else:
-            return send_from_directory(file_subdir, file_name)
+            return {'subdir': file_subdir,
+                    'name': file_name,}
 
 
+    def get(self, file_name):
+        # curl 127.0.0.1:4000/api/file/somefile.txt --output some.file
+        search_result = self.search(file_name)
+
+        if search_result.get('error', None):
+            return jsonify(search_result)
+        else:
+            return send_from_directory(search_result['subdir'], 
+                                        search_result['name'])
+
+
+    def delete(self, file_name):
+        # curl -X "DELETE" http://www.example.com/page
+        # curl -X "DELETE" http://www.url.com/page
+
+        search_result = self.search(file_name)
+
+        if search_result.get('error', None):
+            return jsonify(search_result)
+        else:
+            Path.unlink(search_result['subdir'] / search_result['name'])
+            is_empty = not any(Path(search_result['subdir']).iterdir())
+            if is_empty:
+                Path.rmdir(search_result['subdir'])
+            
+            return 'deleted!'
         
 
-
-
-    def delete(self):
-        pass
 
 
         
