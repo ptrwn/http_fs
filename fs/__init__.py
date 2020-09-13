@@ -18,7 +18,8 @@ if not (filedir.exists() and filedir.is_dir()):
 api = Api(app)
 
 from fs.resources import Uploader
-api.add_resource(Uploader, '/api/upload', endpoint='uploader')
+api.add_resource(Uploader, '/api/upload', endpoint='uploader', \
+    resource_class_kwargs={'filedir': filedir})
 
 from fs.resources import Downloader
 api.add_resource(Downloader, '/api/download', endpoint='downloader')
