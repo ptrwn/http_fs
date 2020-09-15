@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from flask import Flask
 from flask_restful import Api
@@ -16,6 +15,7 @@ if not (filedir.exists() and filedir.is_dir()):
             Rename the file or set a different name for the upload folder in config.py.")
 
 api = Api(app)
+# app.logger.info('Processing default request') 
 
 from fs.resources import Uploader
 api.add_resource(Uploader, '/api/upload', endpoint='uploader', \

@@ -1,4 +1,3 @@
-import os  # do not need it anymore if I use Path to handle path
 import hashlib
 from pathlib import Path
 from flask_restful import Resource
@@ -13,8 +12,7 @@ class Uploader(Resource):
     def hasher(self, file_obj):
 
         BLOCK_SIZE = 65536 #64Kb
-        file_hash = hashlib.sha256() 
-        #file_hash = hashlib.md5() 
+        file_hash = hashlib.blake2b() 
         fb = file_obj.read(BLOCK_SIZE)
         while len(fb) > 0:
             file_hash.update(fb)
@@ -55,7 +53,9 @@ class Uploader(Resource):
             submitted_file = request.files['file']
             submitted_file_name = self.hasher(submitted_file)
             #submitted_file_name = submitted_file.filename     ######### DBG #################################       
-            self.saver(submitted_file, submitted_file_name)
+            return self.saver(submitted_file, submitted_file_name)
+
+
 
     
     def put(self):
