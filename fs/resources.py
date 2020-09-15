@@ -1,7 +1,7 @@
 import hashlib
 from pathlib import Path
 from flask_restful import Resource
-from flask import request, jsonify, send_from_directory, send_file
+from flask import request, jsonify, send_from_directory, send_file, make_response
 
 
 class Uploader(Resource):
@@ -85,7 +85,7 @@ class File(Resource):
         search_result = self.search(file_name)
 
         if search_result.get('error', None):
-            return jsonify(search_result)
+            return make_response(jsonify(search_result), 404)
         else:
             return send_from_directory(search_result['subdir'], 
                                         search_result['name'])
@@ -97,7 +97,7 @@ class File(Resource):
         search_result = self.search(file_name)
 
         if search_result.get('error', None):
-            return jsonify(search_result)
+            return make_response(jsonify(search_result), 404)
         else:
             file_subdir = search_result['subdir']
             file_name = search_result['name']
