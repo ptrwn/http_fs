@@ -1,8 +1,10 @@
-import os
-
 class Config(object):
-    DEBUG = True
+    DEBUG = False
     TESTING = False
     UPLOAD_FOLDER = 'store'
+
+
+class DevConfig(Config):
+    DEBUG = True
 
 
