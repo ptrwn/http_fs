@@ -7,4 +7,9 @@ class Config(object):
 class DevConfig(Config):
     DEBUG = True
 
+class TestConfig(Config):
+    TESTING = True
+    DEBUG = False
+    UPLOAD_FOLDER = 'test_store'
+
 
