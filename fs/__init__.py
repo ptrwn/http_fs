@@ -22,13 +22,18 @@ logger.addHandler(file_handler)
 app = Flask(__name__)
 logger.info('App initiated.')
 
-# export FLASK_ENV variable to production or development
+# export FLASK_ENV variable
+
 if os.environ.get("FLASK_ENV") == "production":
     app.config.from_object("config.Config")
     logger.debug('Production config loaded.')
+elif os.environ.get("FLASK_ENV") == "testing":
+    app.config.from_object("config.TestConfig")
+    logger.debug('Testing config loaded.')
 else:
     app.config.from_object("config.DevConfig")
     logger.debug('Development config loaded.')
+    
 
 filedir = Path(__file__).parent.parent / (app.config['UPLOAD_FOLDER'])
 
