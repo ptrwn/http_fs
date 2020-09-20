@@ -6,7 +6,7 @@ import logging.handlers
 import logging
 import os
 
-''' Set up application.
+'''Set up application.
 
 - Logging.
 - Selest config (production, development, or testing).
@@ -16,12 +16,11 @@ import os
 Create application object and api object. 
 
 Raise:
-        FileExistsError: The upload directory name is already taken by a file.
-
+    FileExistsError: The upload directory name is already taken by a file.
 '''
 
 
-# Set up logging.
+# Create logger object.
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -38,9 +37,7 @@ app = Flask(__name__)
 logger.info('App initiated.')
 
 
-
-
-# Export FLASK_ENV variable to set config.
+# Before running the app, export FLASK_ENV variable to choose config.
 if os.environ.get("FLASK_ENV") == "production":
     app.config.from_object("config.Config")
     logger.debug('Production config loaded.')
@@ -69,7 +66,8 @@ if not (filedir.exists() and filedir.is_dir()):
 
 api = Api(app)
 
-# Import resource that handles file upload.
+# Import resource that handles file upload. Pass file storage dir
+# to resource class.
 from fs.resources import Uploader
 api.add_resource(Uploader, '/api/upload', endpoint='uploader', \
     resource_class_kwargs={'filedir': filedir})
