@@ -1,5 +1,6 @@
 __pycache__/
-store*
-testfiles/*
-.vscode/*
-denv/*
+store/
+testfiles/
+.vscode/
+denv/
+file_api/fs.log
