@@ -3,10 +3,13 @@ Description=HTTP API daemon
 After=network.target
 
 [Service]
-User=<username>
-WorkingDirectory=<path to app>
-ExecStart=<full path to virtual environment>/venv/bin/gunicorn -b localhost:4000 -w 2 app:app
+User=fileshare
+WorkingDirectory=/home/fileshare/fs/file_api
+Environment=FLASK_ENV=production
+ExecStart=/home/fileshare/fs/file_api/venv/bin/gunicorn --log-level INFO -b 0.0.0.0:4000 -w 1 app:app
 Restart=always
+StandardOutput=append:/home/fileshare/fs/service.log
+StandardError=append:/home/fileshare/fs/service_error.log
 
 [Install]
 WantedBy=multi-user.target
