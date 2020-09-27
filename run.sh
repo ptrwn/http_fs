@@ -1,12 +1,27 @@
 #!/bin/bash
 
-# to remove -- sudo userdel -r testuser
- # 
- useradd --create-home --comment "Account for running fileshare app" --shell /bin/bash fileshare
+#to rollback, run: sudo userdel -r fileshare
 
-python3.7 -m venv testenv
+# create service user
+useradd --create-home --comment "Account for running fileshare app" --shell /bin/bash fileshare
 
+# ensure the correct ownership
+chown -R fileshare:fileshare /home/fileshare
 
-source "testenv/bin/activate"
-echo "activated"
+# make new virtual environment
+python3.7 -m venv /home/fileshare/venv
+
+# activate it
+source "/home/fileshare/venv/bin/activate"
+
+# install the dependencies
 pip install -r requirements.txt
+
+# copy unit file to systemd's dir
+cp file_api/fs.service /etc/systemd/system
+
+# copy source files to service user's home
+cp -a file_api /home/fileshare
+
+# restart systemd to make new service found
+systemctl daemon-reload

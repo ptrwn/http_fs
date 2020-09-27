@@ -1,7 +1,0 @@
-global-exclude *.pyc
-graft file_api/tests
-graft file_api/fs
-include file_api/fs.service
-include README.md
-include requirements.txt
-include app.py
