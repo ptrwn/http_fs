@@ -19,6 +19,10 @@ The OS must support systemd, WSL-based systems are not supported.
 ```
 ./run.sh
 ```
+3. Start the service:
+```
+systemctl start fs
+```
 
 
 ## How to use
